@@ -271,7 +271,7 @@ export class ApplicationBase extends EventEmitter {
         const property = Object.values(this.propertyMeta)
             .find(p =>
                 p.prop.cmd instanceof Array ? p.prop.cmd.includes(type) : p.prop.cmd === type
-                    && (p.prop.visibleIf ? this.config.getProperty(p.prop.visibleIf) : true));
+                    && (p.prop.visibleIf && p.prop.visibleIf !== p.prop.key ? this.config.getProperty(p.prop.visibleIf) : true));
 
         if (!property) return console.error("Trying to refresh unknown property", type);
 
