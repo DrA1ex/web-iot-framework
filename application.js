@@ -31,6 +31,7 @@ export class ApplicationBase extends EventEmitter {
         Connected: "app_base_connected",
         Disconnected: "app_base_disconnected",
         Notification: "app_base_notification",
+        PropertyCommited: "app_base_prop_commited"
     }
 
     #initialized = false;
@@ -120,7 +121,7 @@ export class ApplicationBase extends EventEmitter {
             if (prop.visibleIf) {
                 const visible = !!this.config.getProperty(prop.visibleIf);
                 control.setVisibility(visible);
-                title?.setVisibility(true);
+                title?.setVisibility(visible);
             }
         });
     }
@@ -536,6 +537,7 @@ export class ApplicationBase extends EventEmitter {
             }
 
             console.log(`Changed '${prop.key}': '${oldValue}' -> '${value}'`);
+            this.emitEvent(this.Event.PropertyCommited, {key: prop.key, prop, value, oldValue});
         } catch (e) {
             console.error("Unable to save changes", e);
             control.setValue(oldValue);

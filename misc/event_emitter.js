@@ -24,6 +24,10 @@ export class EventEmitter {
      * @param {function} handler
      */
     subscribe(subscriber, type, handler) {
+        if (!subscriber) console.warn("Subscription with empty subscriber!");
+        if (!type) return console.error("Unable to subscribe: type is empty!");
+        if (!handler) return console.error("Unable to subscribe: handler is empty!");
+
         if (!this.#subscribers.has(subscriber)) {
             this.#subscribers.set(subscriber, {});
         }
