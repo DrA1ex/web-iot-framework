@@ -9,8 +9,14 @@ export class TextControl extends Control {
         return this.element.innerText;
     }
 
-
-    setText(text) {
-        this.element.innerText = text;
+    get html() {
+        return this.element.innerHTML;
+    }
+    setText(value) {
+        if (value instanceof Array && value.length === 2) {
+            this.element.innerHTML = `<left>${value[0]}</left><right>${value[1]}</right>`;
+        } else {
+            this.element.innerText = value;
+        }
     }
 }
