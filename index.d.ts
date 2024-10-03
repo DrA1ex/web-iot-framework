@@ -374,6 +374,8 @@ declare module "application.js" {
     export interface CommandBaseConfig extends BaseConfig {
         cmd: [number, number] | number;
         kind: keyof typeof PropertyKind;
+        default?: any;
+        transform?: () => any | [any, any];
     }
 
     export interface TriggerConfig extends CommandBaseConfig {
