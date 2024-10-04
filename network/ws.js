@@ -13,7 +13,8 @@ export const WebSocketState = {
     connected: "connected"
 }
 
-const MAX_REQUEST_ID = 2 ** 16 - 1;
+const MAX_REQUEST_ID = 2 ** 16 - 2;
+const ERROR_REQUEST_ID = 0xffff;
 
 export class WebSocketConfig {
     /**
@@ -224,6 +225,12 @@ export class WebSocketInteraction extends EventEmitter {
                 console.log("Received notification of type", packet.type);
 
                 return this.emitEvent(WebSocketInteraction.Event.Notification, packet);
+            } else if (packet.requestId === ERROR_REQUEST_ID) {
+                if (packet.type === SystemPacketType.RESPONSE_STRING) {
+                    return console.error("Websocket received error", packet.parseString());
+                } else {
+                    return console.error("Websocket received unknown error", packet);
+                }
             } else if (!(packet.requestId in this.#requestMap)) {
                 return console.error(`Websocket unknown requestId: ${packet.requestId}`, packet);
             }
