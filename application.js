@@ -182,6 +182,12 @@ export class ApplicationBase extends EventEmitter {
                     control.setOnClick(() => this.#sendCommand(prop));
                 }
 
+                if ("setOnChange" in control) control.setOnChange((value) => config.setProperty(prop.key, value));
+
+                if (control instanceof SelectControl) {
+                    control.setOptions(this.config.lists[prop.list].map(v => ({key: v.code, label: v.name})));
+                }
+
                 if (prop.visibleIf) {
                     let visibleValue = config.getProperty(prop.visibleIf);
                     if (prop.visibilityInvert) visibleValue = !visibleValue;
@@ -198,10 +204,6 @@ export class ApplicationBase extends EventEmitter {
                     }
                 }
 
-                if (prop.type === "select") {
-                    control.setOptions(this.config.lists[prop.list].map(v => ({key: v.code, label: v.name})));
-                }
-
                 if ("setValue" in control) {
                     const value = config.getProperty(prop.key);
                     control.setValue(value);
@@ -211,7 +213,6 @@ export class ApplicationBase extends EventEmitter {
                 }
 
                 control.setAttribute("data-loading", false);
-                if ("setOnChange" in control) control.setOnChange((value) => config.setProperty(prop.key, value));
             }
         }
     }
