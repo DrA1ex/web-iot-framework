@@ -105,25 +105,7 @@ export class ApplicationBase extends EventEmitter {
 
         this.sendChanges = FunctionUtils.throttle(this.#sendChangesImpl.bind(this), this.#cfg.throttleInterval);
 
-        this.subscribe(this, this.Event.Notification, (_, {key, value}) => {
-            this.config.setProperty(key, value, false);
-
-            const {control, title, prop} = this.propertyMeta[key];
-            if (prop.type === "skip") return;
-
-            const propValue = this.config.getProperty(key);
-            if ("setValue" in control) {
-                control.setValue(propValue);
-            } else if ("setText" in control) {
-                control.setText(propValue);
-            }
-
-            if (prop.visibleIf) {
-                const visible = !!this.config.getProperty(prop.visibleIf);
-                control.setVisibility(visible);
-                title?.setVisibility(visible);
-            }
-        });
+        this.subscribe(this, this.Event.Notification, this.#processNotification.bind(this));
     }
 
     async begin(root) {
@@ -197,7 +179,10 @@ export class ApplicationBase extends EventEmitter {
                 const {control, title} = section.props[prop.key];
 
                 if (prop.visibleIf) {
-                    if (config.getProperty(prop.visibleIf)) {
+                    let visibleValue = config.getProperty(prop.visibleIf);
+                    if (prop.visibilityInvert) visibleValue = !visibleValue;
+
+                    if (visibleValue) {
                         control.setVisibility(true);
                         title?.setVisibility(true);
                     } else {
@@ -268,11 +253,48 @@ export class ApplicationBase extends EventEmitter {
         return this.#refreshProperty(packet.type, packet.parser());
     }
 
+    #processNotification(_, {key, value, notifyDependant = true}) {
+        this.config.setProperty(key, value, false);
+
+        const {control, title, prop} = this.propertyMeta[key];
+        if (prop.type === "skip") return;
+
+        const propValue = this.config.getProperty(key);
+        if ("setValue" in control) {
+            control.setValue(propValue);
+        } else if ("setText" in control) {
+            control.setText(propValue);
+        }
+
+        if (prop.visibleIf) {
+            let visible = !!this.config.getProperty(prop.visibleIf);
+            if (prop.visibilityInvert) visible = !visible;
+
+            control.setVisibility(visible);
+            title?.setVisibility(visible);
+        }
+
+        // Refresh also dependant properties
+        if (notifyDependant) {
+            const dependant = Object.values(this.propertyMeta)
+                .filter(({prop}) => prop.key !== key && prop.visibleIf === key);
+
+            for (const {prop: {key: dependantKey}} of dependant) {
+                this.emitEvent(this.Event.Notification, {
+                    key: dependantKey,
+                    value: this.config.getProperty(dependantKey),
+                    notifyDependant: false
+                });
+            }
+        }
+    }
+
     #refreshProperty(type, parser) {
         const property = Object.values(this.propertyMeta)
             .find(p =>
                 p.prop.cmd instanceof Array ? p.prop.cmd.includes(type) : p.prop.cmd === type
-                    && (p.prop.visibleIf && p.prop.visibleIf !== p.prop.key ? this.config.getProperty(p.prop.visibleIf) : true));
+                    && (p.prop.visibleIf && p.prop.visibleIf !== p.prop.key
+                        ? this.config.getProperty(p.prop.visibleIf) : true));
 
         if (!property) return console.error("Trying to refresh unknown property", type);
 
@@ -363,6 +385,7 @@ export class ApplicationBase extends EventEmitter {
 
                     case "label":
                         control = new TextControl(document.createElement("h4"));
+                        if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
                         control.addClass("label");
                         break;
 

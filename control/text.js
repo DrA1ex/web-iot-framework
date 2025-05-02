@@ -1,6 +1,8 @@
 import {Control} from "./base.js";
 
 export class TextControl extends Control {
+    #displayConverter = null;
+
     constructor(element) {
         super(element);
     }
@@ -12,7 +14,14 @@ export class TextControl extends Control {
     get html() {
         return this.element.innerHTML;
     }
+
+    setDisplayConverter(fn) {
+        this.#displayConverter = fn;
+    }
+
     setText(value) {
+        if (this.#displayConverter) value = this.#displayConverter(value);
+
         if (value instanceof Array && value.length === 2) {
             this.element.innerHTML = `<left>${value[0]}</left><right>${value[1]}</right>`;
         } else {

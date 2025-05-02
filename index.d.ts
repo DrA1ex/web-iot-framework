@@ -368,6 +368,7 @@ declare module "application.js" {
         type: string;
         title?: string;
         visibleIf?: string;
+        visibilityInvert?: boolean;
         extra?: { m_top?: boolean };
     }
 
@@ -429,6 +430,7 @@ declare module "application.js" {
     export interface LabelConfig extends CommandBaseConfig {
         type: "label";
         label: string;
+        displayConverter: (value: number) => string;
     }
 
     export interface SkipConfig {
