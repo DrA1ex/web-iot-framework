@@ -178,6 +178,10 @@ export class ApplicationBase extends EventEmitter {
 
                 const {control, title} = section.props[prop.key];
 
+                if (control instanceof ButtonControl && prop.cmd) {
+                    control.setOnClick(() => this.#sendCommand(prop));
+                }
+
                 if (prop.visibleIf) {
                     let visibleValue = config.getProperty(prop.visibleIf);
                     if (prop.visibilityInvert) visibleValue = !visibleValue;
@@ -198,9 +202,7 @@ export class ApplicationBase extends EventEmitter {
                     control.setOptions(this.config.lists[prop.list].map(v => ({key: v.code, label: v.name})));
                 }
 
-                if (control instanceof ButtonControl && prop.cmd) {
-                    control.setOnClick(() => this.#sendCommand(prop));
-                } else if ("setValue" in control) {
+                if ("setValue" in control) {
                     const value = config.getProperty(prop.key);
                     control.setValue(value);
                 } else if (prop.type === "label") {
