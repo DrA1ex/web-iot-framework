@@ -340,6 +340,7 @@ export class ApplicationBase extends EventEmitter {
                     case "wheel":
                         control = new WheelControl(document.createElement("div"), prop.limit);
                         if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
+                        if (prop.integer !== undefined) control.setIntegerMode(prop.integer);
                         if (prop.anchor) control.setAnchor(prop.anchor);
                         if (prop.anchorAmount) control.setAnchorAmount(prop.anchorAmount);
                         if (prop.anchored !== undefined) control.setAnchored(prop.anchored);

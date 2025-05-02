@@ -7,6 +7,8 @@ export class WheelControl extends InputControlBase {
     #mainPartElement;
     #fractionPartElement;
 
+    #integer = true
+
     #displayConverter = null;
     #anchorPosition = null;
     #anchorAmount = 0.01;
@@ -83,6 +85,10 @@ export class WheelControl extends InputControlBase {
         this.#displayConverter = fn;
     }
 
+    setIntegerMode(flag) {
+        this.#integer = !!flag;
+    }
+
     setAnchor(value) {
         this.#anchorPosition = value / this.limit;
         this.element.style.setProperty("--anchor", this.#anchorPosition.toString());
@@ -133,7 +139,9 @@ export class WheelControl extends InputControlBase {
         }
 
         const newPos = Math.max(0, Math.min(1, pos));
-        const newValue = Math.round(newPos * this.limit);
+        const newValue = this.#integer ?
+            Math.round(newPos * this.limit)
+            : newPos * this.limit;
 
         const oldValue = this.getValue();
         this.setValue(newValue);

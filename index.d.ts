@@ -387,6 +387,7 @@ declare module "application.js" {
         type: "wheel";
         limit: number;
         min?: number;
+        integer?: boolean,
         anchor?: number;
         anchorAmount?: number;
         anchored?: boolean;
