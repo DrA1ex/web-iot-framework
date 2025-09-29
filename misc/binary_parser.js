@@ -26,9 +26,7 @@ export class BinaryParser {
      * @returns {string} - The parsed string value
      */
     readString(byteLength, encoding = "utf8") {
-        const strSlice = new Uint8Array(this.#buffer, this.#byteOffset, byteLength);
-        this.#byteOffset += byteLength;
-
+        const strSlice = this.readBinary(byteLength);
         return new TextDecoder(encoding).decode(strSlice);
     }
 
@@ -69,6 +67,18 @@ export class BinaryParser {
         this.#byteOffset += byteLength - length;
 
         return str;
+    }
+
+    /**
+     * Read a binary fixed size fild from the buffer
+     * @param {number} byteLength - Size of binary filed in bytes
+     * @returns {Uint8Array} - The read binary array
+     */
+    readBinary(byteLength) {
+        const binSlice = new Uint8Array(this.#buffer, this.#byteOffset, byteLength);
+        this.#byteOffset += byteLength;
+
+        return binSlice;
     }
 
     /**

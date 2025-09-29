@@ -77,8 +77,13 @@ export class AppConfigBase extends EventEmitter {
             return;
         }
 
-        const value = this.#property(key, (obj, key) => obj[key]);
-        return (prop.transform ? prop.transform(value) : value) ?? prop.default;
+        try {
+            const value = this.#property(key, (obj, key) => obj[key]);
+            return (prop.transform ? prop.transform(value) : value) ?? prop.default;
+        } catch (err) {
+            console.error(`Unable to read property ${key}: ${err}`);
+            throw err;
+        }
     }
 
     setProperty(key, value, sendNotification = true) {
