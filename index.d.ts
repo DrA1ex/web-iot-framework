@@ -480,7 +480,7 @@ declare module "application.js" {
         name: string;
     }
 
-    export type SelectListConfig = Record<string, SelectOptionsConfig>
+    export type SelectListConfig = Record<string, SelectOptionsConfig[]>
 
     export interface PropertyMeta {
         prop: PropertyConfig;
