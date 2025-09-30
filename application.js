@@ -1,14 +1,5 @@
 import {AppConfigBase} from "./config.js"
-import {
-    ButtonControl,
-    FrameControl,
-    InputControl,
-    InputType,
-    SelectControl,
-    TextControl,
-    TriggerControl,
-    WheelControl
-} from "./control"
+import {ButtonControl, FrameControl, InputControl, InputType, SelectControl, TextControl, TriggerControl, WheelControl} from "./control"
 import {EventEmitter} from "./misc/event_emitter.js";
 import {BinaryParser} from "./misc/binary_parser.js";
 import {WebSocketInteraction} from "./network/ws.js";
@@ -306,6 +297,8 @@ export class ApplicationBase extends EventEmitter {
             value = property.prop.cmd[0] === type;
         } else if (property.prop.kind === "FixedString" && property.prop.maxLength) {
             value = parser.readFixedString(property.prop.maxLength);
+        } else if (property.prop.kind === "Binary" && property.prop.size) {
+            value = parser.readBinary(property.prop.size);
         } else {
             value = parser[`read${property.prop.kind}`]();
         }

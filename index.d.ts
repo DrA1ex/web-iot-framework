@@ -61,6 +61,13 @@ declare module "misc/binary_parser.js" {
         readFixedString(byteLength: number, encoding?: string): string;
 
         /**
+         * Read a binary fixed size fild from the buffer
+         * @param {number} byteLength - Size of binary filed in bytes
+         * @returns {Uint8Array} - The read binary array
+         */
+        readBinary(byteLength: number): Uint8Array;
+
+        /**
          * Read a boolean from the buffer
          * @returns The parsed boolean value
          */
@@ -361,6 +368,7 @@ declare module "application.js" {
         Float64 = "Float64",
         FixedString = "FixedString",
         NullTerminatedString = "NullTerminatedString",
+        Binary = "Binary",
     }
 
     export interface BaseConfig {
@@ -405,6 +413,12 @@ declare module "application.js" {
 
     export interface IntConfig extends CommandBaseConfig {
         type: "int";
+        min?: number;
+        limit?: number;
+    }
+
+    export interface FloatConfig extends CommandBaseConfig {
+        type: "float";
         min?: number;
         limit?: number;
     }
@@ -455,6 +469,7 @@ declare module "application.js" {
         | TimeConfig
         | SelectConfig
         | IntConfig
+        | FloatConfig
         | TextConfig
         | PasswordConfig
         | ColorConfig
