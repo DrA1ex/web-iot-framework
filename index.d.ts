@@ -334,7 +334,7 @@ declare module "control/index.js" {
 // main module
 declare module "application.js" {
     import {Control, FrameControl, TextControl} from "control/index.js";
-    import {WebSocketInteraction, WebSocketConfig} from "network/ws.js";
+    import {WebSocketConfig, WebSocketInteraction} from "network/ws.js";
     import {EventEmitter} from "misc/event_emitter.js";
     import {BinaryParser} from "misc/binary_parser.js";
 
@@ -555,5 +555,7 @@ declare module "application.js" {
         begin(root: HTMLElement): Promise<void>;
 
         sendChanges: (config: any, prop: PropertyConfig, value: number, oldValue: any) => Promise<void>;
+
+        protected buildControl(prop: PropertyConfig): Control | null;
     }
 }

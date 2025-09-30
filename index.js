@@ -2,7 +2,7 @@ export {BinaryParser} from "./misc/binary_parser.js"
 export {EventEmitter} from "./misc/event_emitter.js"
 
 export {
-    ButtonControl, FrameControl, InputControl, InputType, SelectControl, TextControl, TriggerControl, WheelControl
+    Control, ButtonControl, FrameControl, InputControl, InputType, SelectControl, TextControl, TriggerControl, WheelControl
 } from "./control/index.js"
 
 export {Packet} from "./network/packet.js"

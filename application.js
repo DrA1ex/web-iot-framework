@@ -325,78 +325,7 @@ export class ApplicationBase extends EventEmitter {
                     section.appendChild(title);
                 }
 
-                let control = null;
-                switch (prop.type) {
-                    case "trigger":
-                        control = new TriggerControl(document.createElement("a"));
-                        break;
-
-                    case "wheel":
-                        control = new WheelControl(document.createElement("div"), prop.limit);
-                        if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
-                        if (prop.integer !== undefined) control.setIntegerMode(prop.integer);
-                        if (prop.anchor) control.setAnchor(prop.anchor);
-                        if (prop.anchorAmount) control.setAnchorAmount(prop.anchorAmount);
-                        if (prop.anchored !== undefined) control.setAnchored(prop.anchored);
-                        break;
-
-                    case "time":
-                        control = new InputControl(document.createElement("input"), InputType.time);
-                        break;
-
-                    case "select":
-                        control = new SelectControl(document.createElement("div"));
-                        break;
-
-                    case "int":
-                        control = control = new InputControl(document.createElement("input"), InputType.int);
-                        break;
-
-                    case "float":
-                        control = control = new InputControl(document.createElement("input"), InputType.float);
-                        break;
-
-                    case "text":
-                        control = new InputControl(document.createElement("input"), InputType.text);
-                        control.setMaxLength(prop.maxLength ?? 255);
-                        break;
-
-                    case "password":
-                        control = new InputControl(document.createElement("input"), InputType.password);
-                        control.setMaxLength(prop.maxLength ?? 255);
-                        break;
-
-                    case "color":
-                        control = new InputControl(document.createElement("input"), InputType.color);
-                        break;
-
-                    case "button":
-                        control = new ButtonControl(document.createElement("a"));
-                        control.setLabel(prop.label);
-                        break;
-
-                    case "title":
-                        control = new TextControl(document.createElement("h4"));
-                        control.setText(prop.label);
-                        break;
-
-                    case "label":
-                        control = new TextControl(document.createElement("h4"));
-                        if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
-                        control.addClass("label");
-                        break;
-
-                    case "separator":
-                        control = new FrameControl(document.createElement("hr"));
-                        break;
-
-                    case "skip":
-                        break;
-
-                    default:
-                        console.error("Invalid prop type.", prop)
-                }
-
+                let control = this.buildControl(prop);
                 if (control) {
                     if (prop.key) control.setAttribute("data-loading", true);
 
@@ -423,6 +352,81 @@ export class ApplicationBase extends EventEmitter {
         this.#propertySections = sectionMeta;
     }
 
+    buildControl(prop) {
+        let control = null;
+        switch (prop.type) {
+            case "trigger":
+                control = new TriggerControl(document.createElement("a"));
+                break;
+
+            case "wheel":
+                control = new WheelControl(document.createElement("div"), prop.limit);
+                if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
+                if (prop.integer !== undefined) control.setIntegerMode(prop.integer);
+                if (prop.anchor) control.setAnchor(prop.anchor);
+                if (prop.anchorAmount) control.setAnchorAmount(prop.anchorAmount);
+                if (prop.anchored !== undefined) control.setAnchored(prop.anchored);
+                break;
+
+            case "time":
+                control = new InputControl(document.createElement("input"), InputType.time);
+                break;
+
+            case "select":
+                control = new SelectControl(document.createElement("div"));
+                break;
+
+            case "int":
+                control = control = new InputControl(document.createElement("input"), InputType.int);
+                break;
+
+            case "float":
+                control = control = new InputControl(document.createElement("input"), InputType.float);
+                break;
+
+            case "text":
+                control = new InputControl(document.createElement("input"), InputType.text);
+                control.setMaxLength(prop.maxLength ?? 255);
+                break;
+
+            case "password":
+                control = new InputControl(document.createElement("input"), InputType.password);
+                control.setMaxLength(prop.maxLength ?? 255);
+                break;
+
+            case "color":
+                control = new InputControl(document.createElement("input"), InputType.color);
+                break;
+
+            case "button":
+                control = new ButtonControl(document.createElement("a"));
+                control.setLabel(prop.label);
+                break;
+
+            case "title":
+                control = new TextControl(document.createElement("h4"));
+                control.setText(prop.label);
+                break;
+
+            case "label":
+                control = new TextControl(document.createElement("h4"));
+                if (prop.displayConverter) control.setDisplayConverter(prop.displayConverter);
+                control.addClass("label");
+                break;
+
+            case "separator":
+                control = new FrameControl(document.createElement("hr"));
+                break;
+
+            case "skip":
+                break;
+
+            default:
+                console.error("Invalid prop type.", prop)
+        }
+
+        return control;
+    }
     #startSection(title, {lock, collapse}) {
         const frame = new FrameControl(document.createElement("div"));
         frame.addClass("section");

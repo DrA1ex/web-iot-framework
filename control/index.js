@@ -1,3 +1,4 @@
+export {Control} from "./base.js"
 export {ButtonControl} from "./button.js";
 export {FrameControl} from "./frame.js";
 export {InputControl, InputType} from "./input.js";
