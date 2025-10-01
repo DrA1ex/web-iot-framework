@@ -71,7 +71,7 @@ export class BinaryParser {
 
     /**
      * Read a binary fixed size fild from the buffer
-     * @param {number} byteLength - Size of binary filed in bytes
+     * @param {number|null} byteLength - Size of binary filed in bytes
      * @returns {Uint8Array} - The read binary array
      */
     readBinary(byteLength) {

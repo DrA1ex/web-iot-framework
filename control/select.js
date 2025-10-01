@@ -95,6 +95,8 @@ export class SelectControl extends InputControlBase {
     }
 
     #onClick(e) {
+        if (e.pointerType === "") return; // Skip non-control click events
+
         const selectRect = this.#select.getBoundingClientRect()
 
         let direction = 0;
